@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class Product {
   final String id;
   final String title;
@@ -8,11 +10,11 @@ class Product {
   bool isFavorite;
 
   Product({
-    this.id,
-    this.title,
-    this.description,
-    this.price,
-    this.imageUrl,
+    @required this.id,
+    @required this.title,
+    @required this.description,
+    @required this.price,
+    @required this.imageUrl,
     this.isFavorite = false,
   });
 }
