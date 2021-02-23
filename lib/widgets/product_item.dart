@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/models/product.dart';
 
-class ProudctItem extends StatelessWidget {
+class ProductItem extends StatelessWidget {
   final Product product;
 
-  ProudctItem(this.product);
+  ProductItem(this.product);
 
   @override
   Widget build(BuildContext context) {
