@@ -13,19 +13,22 @@ class UserProductItem extends StatelessWidget {
         backgroundImage: NetworkImage(product.imageUrl),
       ),
       title: Text(product.title),
-      trailing: Row(
-        children: [
-          IconButton(
-            icon: Icon(Icons.edit),
-            color: Theme.of(context).primaryColor,
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: Icon(Icons.delete),
-            color: Theme.of(context).errorColor,
-            onPressed: () {},
-          ),
-        ],
+      trailing: Container(
+        width: 100,
+        child: Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.edit),
+              color: Theme.of(context).primaryColor,
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.delete),
+              color: Theme.of(context).errorColor,
+              onPressed: () {},
+            ),
+          ],
+        ),
       ),
     );
   }
