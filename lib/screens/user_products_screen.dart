@@ -4,6 +4,8 @@ import 'package:shop_app/providers/products.dart';
 import 'package:shop_app/widgets/user_product_item.dart';
 
 class UserProductsScreen extends StatelessWidget {
+  static const String routeName = '/user-products';
+
   @override
   Widget build(BuildContext context) {
     final productsProvider = Provider.of<Products>(context);
