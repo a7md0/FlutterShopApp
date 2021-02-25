@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
           '/': (ctx) => ProductsOverviewScreen(),
           ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
         },
+        debugShowCheckedModeBanner: false,
       ),
     );
   }
