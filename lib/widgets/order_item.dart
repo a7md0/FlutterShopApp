@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:shop_app/providers/orders.dart' as Orders;
 
@@ -15,6 +16,13 @@ class OrderItem extends StatelessWidget {
         children: [
           ListTile(
             title: Text('\$${orderItem.amount}'),
+            subtitle: Text(
+              DateFormat('dd MM yyyy').format(orderItem.createdAt),
+            ),
+            trailing: IconButton(
+              icon: Icon(Icons.expand_more),
+              onPressed: () {},
+            ),
           )
         ],
       ),
