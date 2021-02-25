@@ -8,6 +8,8 @@ class Cart with ChangeNotifier {
     return {..._items};
   }
 
+  int get itemsCount => _items.length;
+
   void addItem(Product product) {
     _items.update(
       product.id,
@@ -24,6 +26,8 @@ class Cart with ChangeNotifier {
         price: product.price,
       ),
     );
+
+    notifyListeners();
   }
 }
 
