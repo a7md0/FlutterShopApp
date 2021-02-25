@@ -9,6 +9,11 @@ class Cart with ChangeNotifier {
   }
 
   int get itemsCount => _items.length;
+  double get itemsTotalAmount {
+    return _items.entries.fold(0, (total, cartItem) {
+      return total + cartItem.value.price * cartItem.value.quantity;
+    });
+  }
 
   void addItem(Product product) {
     _items.update(
