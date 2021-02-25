@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shop_app/providers/product.dart';
+import 'package:shop_app/providers/products.dart';
 
 class EditProductScreen extends StatefulWidget {
   static const String routeName = '/edit-product';
@@ -20,12 +22,43 @@ class _EditProductScreenState extends State<EditProductScreen> {
     description: '',
     imageUrl: '',
   );
+  var _initValues = {
+    'title': '',
+    'description': '',
+    'price': '',
+    'imageUrl': '',
+  };
+
+  bool _isInit = true;
 
   @override
   void initState() {
     super.initState();
 
     _imageUrlFocusNode.addListener(_updateImageUrl);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_isInit) {
+      _isInit = false;
+
+      final productId = ModalRoute.of(context).settings.arguments as String;
+
+      if (productId != null) {
+        _editedProduct = Provider.of<Products>(context, listen: false).findById(productId);
+
+        _initValues = {
+          'title': _editedProduct.title,
+          'description': _editedProduct.description,
+          'price': _editedProduct.price.toString(),
+          'imageUrl': _editedProduct.imageUrl,
+        };
+        _imageUrlController.text = _initValues['imageUrl'];
+      }
+    }
   }
 
   @override
@@ -49,6 +82,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
               children: [
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Title'),
+                  initialValue: _initValues['title'],
                   textInputAction: TextInputAction.next,
                   validator: (value) {
                     if (value.isEmpty) {
@@ -63,10 +97,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     price: _editedProduct.price,
                     description: _editedProduct.description,
                     imageUrl: _editedProduct.imageUrl,
+                    isFavorite: _editedProduct.isFavorite,
                   ),
                 ),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Price'),
+                  initialValue: _initValues['price'],
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.number,
                   validator: (value) {
@@ -88,10 +124,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     price: double.parse(value),
                     description: _editedProduct.description,
                     imageUrl: _editedProduct.imageUrl,
+                    isFavorite: _editedProduct.isFavorite,
                   ),
                 ),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Description'),
+                  initialValue: _initValues['description'],
                   maxLines: 3,
                   keyboardType: TextInputType.multiline,
                   validator: (value) {
@@ -110,6 +148,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     price: _editedProduct.price,
                     description: value,
                     imageUrl: _editedProduct.imageUrl,
+                    isFavorite: _editedProduct.isFavorite,
                   ),
                 ),
                 Row(
@@ -166,6 +205,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           price: _editedProduct.price,
                           description: _editedProduct.description,
                           imageUrl: value,
+                          isFavorite: _editedProduct.isFavorite,
                         ),
                       ),
                     )
@@ -187,7 +227,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
 
     _form.currentState.save();
-    print(_editedProduct.toString());
+
+    if (_editedProduct.id == null) {
+      Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+    } else {
+      Provider.of<Products>(context, listen: false).updateProduct(_editedProduct);
+    }
+
+    Navigator.of(context).pop();
   }
 
   void _updateImageUrl() {
