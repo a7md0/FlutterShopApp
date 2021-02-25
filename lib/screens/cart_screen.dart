@@ -30,8 +30,10 @@ class CartScreen extends StatelessWidget {
                   SizedBox(width: 10),
                   Chip(
                     label: Text(
-                      cart.itemsTotalAmount.toString(),
+                      '\$${cart.itemsTotalAmount}',
+                      style: TextStyle(color: Colors.white),
                     ),
+                    backgroundColor: Theme.of(context).primaryColor,
                   )
                 ],
               ),
