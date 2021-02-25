@@ -23,15 +23,22 @@ class Cart with ChangeNotifier {
         title: cartItem.title,
         quantity: cartItem.quantity + 1,
         price: cartItem.price,
+        productId: cartItem.productId,
       ),
       ifAbsent: () => CartItem(
         id: DateTime.now().toString(),
         title: product.title,
         quantity: 1,
         price: product.price,
+        productId: product.id,
       ),
     );
 
+    notifyListeners();
+  }
+
+  void removeItem(String productId) {
+    _items.remove(productId);
     notifyListeners();
   }
 }
@@ -42,10 +49,13 @@ class CartItem {
   final int quantity;
   final double price;
 
+  final String productId;
+
   const CartItem({
     @required this.id,
     @required this.title,
     @required this.quantity,
     @required this.price,
+    @required this.productId,
   });
 }
