@@ -52,6 +52,7 @@ class Product with ChangeNotifier {
     String description,
     double price,
     String imageUrl,
+    bool isFavorite,
   }) =>
       Product(
         id: id ?? this.id,
@@ -59,7 +60,7 @@ class Product with ChangeNotifier {
         description: description ?? this.description,
         price: description ?? this.price,
         imageUrl: description ?? this.imageUrl,
-        isFavorite: this.isFavorite,
+        isFavorite: isFavorite ?? this.isFavorite,
       );
 
   Map<String, dynamic> toJson() => {
