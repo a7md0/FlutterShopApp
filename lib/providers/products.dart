@@ -88,9 +88,11 @@ class Products with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateProduct(Product product) {
+  Future<void> updateProduct(Product product) async {
     final idx = _items.indexWhere((p) => p.id == product.id);
     if (idx >= 0) {
+      final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products/${product.id}.json';
+      await http.patch(url, body: json.encode(product.toJson()));
       _items[idx] = product;
       notifyListeners();
     }

@@ -253,7 +253,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
         );
       }
     } else {
-      Provider.of<Products>(context, listen: false).updateProduct(_editedProduct);
+      await Provider.of<Products>(context, listen: false).updateProduct(_editedProduct);
     }
 
     setState(() => _isLoading = false);
