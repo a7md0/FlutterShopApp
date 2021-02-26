@@ -46,7 +46,7 @@ class Products with ChangeNotifier {
     return _items.firstWhere((p) => p.id == id);
   }
 
-  void addProduct(Product product) {
+  Future<void> addProduct(Product product) async {
     var newProduct = Product(
       id: null,
       title: product.title,
@@ -57,13 +57,12 @@ class Products with ChangeNotifier {
     );
 
     const url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products.json';
-    http.post(url, body: json.encode(product.toJson())).then((response) {
-      final body = json.decode(response.body);
-      newProduct = newProduct.copyWith(id: body['name']);
+    final response = await http.post(url, body: json.encode(product.toJson()));
+    final body = json.decode(response.body);
+    newProduct = newProduct.copyWith(id: body['name']);
 
-      _items.add(newProduct);
-      notifyListeners();
-    });
+    _items.add(newProduct);
+    notifyListeners();
   }
 
   void updateProduct(Product product) {
