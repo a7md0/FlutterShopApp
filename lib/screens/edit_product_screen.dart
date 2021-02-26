@@ -219,7 +219,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     );
   }
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     final isValid = _form.currentState.validate();
 
     if (!isValid) {
@@ -229,7 +229,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     _form.currentState.save();
 
     if (_editedProduct.id == null) {
-      Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+      await Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
     } else {
       Provider.of<Products>(context, listen: false).updateProduct(_editedProduct);
     }
