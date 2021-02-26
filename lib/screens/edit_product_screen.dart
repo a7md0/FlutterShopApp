@@ -96,14 +96,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
                           return null;
                         },
-                        onSaved: (value) => _editedProduct = Product(
-                          id: _editedProduct.id,
-                          title: value,
-                          price: _editedProduct.price,
-                          description: _editedProduct.description,
-                          imageUrl: _editedProduct.imageUrl,
-                          isFavorite: _editedProduct.isFavorite,
-                        ),
+                        onSaved: (value) {
+                          _editedProduct = _editedProduct.copyWith(
+                            title: value,
+                          );
+                        },
                       ),
                       TextFormField(
                         decoration: InputDecoration(labelText: 'Price'),
@@ -123,14 +120,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
                           return null;
                         },
-                        onSaved: (value) => _editedProduct = Product(
-                          id: _editedProduct.id,
-                          title: _editedProduct.title,
-                          price: double.parse(value),
-                          description: _editedProduct.description,
-                          imageUrl: _editedProduct.imageUrl,
-                          isFavorite: _editedProduct.isFavorite,
-                        ),
+                        onSaved: (value) {
+                          _editedProduct = _editedProduct.copyWith(
+                            price: double.parse(value),
+                          );
+                        },
                       ),
                       TextFormField(
                         decoration: InputDecoration(labelText: 'Description'),
@@ -147,14 +141,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
                           return null;
                         },
-                        onSaved: (value) => _editedProduct = Product(
-                          id: _editedProduct.id,
-                          title: _editedProduct.title,
-                          price: _editedProduct.price,
-                          description: value,
-                          imageUrl: _editedProduct.imageUrl,
-                          isFavorite: _editedProduct.isFavorite,
-                        ),
+                        onSaved: (value) {
+                          _editedProduct = _editedProduct.copyWith(
+                            description: value,
+                          );
+                        },
                       ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -204,14 +195,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
                                 return null;
                               },
-                              onSaved: (value) => _editedProduct = Product(
-                                id: _editedProduct.id,
-                                title: _editedProduct.title,
-                                price: _editedProduct.price,
-                                description: _editedProduct.description,
-                                imageUrl: value,
-                                isFavorite: _editedProduct.isFavorite,
-                              ),
+                              onSaved: (value) {
+                                _editedProduct = _editedProduct.copyWith(
+                                  imageUrl: value,
+                                );
+                              },
                             ),
                           )
                         ],
