@@ -77,7 +77,7 @@ class _OrderButtonState extends State<OrderButton> {
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      child: Text('ORDER'),
+      child: _isLoading ? CircularProgressIndicator() : Text('ORDER'),
       onPressed: (widget.cart.itemsTotalAmount <= 0 || _isLoading)
           ? null
           : () async {
