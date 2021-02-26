@@ -99,23 +99,23 @@ class Products with ChangeNotifier {
     }
   }
 
-  void deleteProduct(String productId) {
+  Future<void> deleteProduct(String productId) async {
     final existingProductIndex = _items.indexWhere((p) => p.id == productId);
     var existingProduct = _items[existingProductIndex];
+
     _items.removeWhere((p) => p.id == productId);
     notifyListeners();
 
     final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products/${productId}.json';
 
-    http.delete(url).then((response) {
-      if (response.statusCode >= 400) {
-        throw HttpException('Failed to delete product.');
-      }
-
-      existingProduct = null;
-    }).catchError((e) {
+    final response = await http.delete(url);
+    if (response.statusCode >= 400) {
       _items.insert(existingProductIndex, existingProduct);
       notifyListeners();
-    });
+
+      throw HttpException('Failed to delete product.');
+    }
+
+    existingProduct = null;
   }
 }
