@@ -71,14 +71,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
-    var newProduct = Product(
-      id: null,
-      title: product.title,
-      price: product.price,
-      description: product.description,
-      imageUrl: product.imageUrl,
-      isFavorite: false,
-    );
+    var newProduct = product.copyWith(isFavorite: false);
 
     const url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products.json';
     final response = await http.post(url, body: json.encode(product.toJson()));
