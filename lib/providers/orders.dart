@@ -31,4 +31,24 @@ class OrderItem {
     @required this.products,
     @required this.createdAt,
   });
+
+  OrderItem copyWith({
+    String id,
+    double amount,
+    List<CartItem> products,
+    DateTime createdAt,
+  }) =>
+      OrderItem(
+        id: id ?? this.id,
+        amount: amount ?? this.amount,
+        products: products ?? this.products,
+        createdAt: createdAt ?? this.createdAt,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'amount': amount,
+        'products': products.map((product) => product.toJson()).toList(),
+        'createdAt': createdAt,
+      };
 }

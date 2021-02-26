@@ -86,4 +86,27 @@ class CartItem {
     @required this.price,
     @required this.productId,
   });
+
+  CartItem copyWith({
+    String id,
+    String title,
+    int quantity,
+    double price,
+    String productId,
+  }) =>
+      CartItem(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        quantity: quantity ?? this.quantity,
+        price: price ?? this.price,
+        productId: productId ?? this.productId,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'quantity': quantity,
+        'price': price,
+        'productId': productId,
+      };
 }
