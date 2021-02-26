@@ -10,6 +10,37 @@ class Orders with ChangeNotifier {
 
   List<OrderItem> get orders => [..._orders];
 
+  Future<void> fetchOrders() async {
+    const url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/orders.json';
+
+    try {
+      final response = await http.get(url);
+      final body = json.decode(response.body) as Map<String, dynamic>;
+
+      _orders = body.entries
+          .map((entry) => OrderItem(
+                id: entry.key,
+                amount: entry.value['amount'],
+                products: (entry.value['products'] as List<dynamic>)
+                    .map(
+                      (product) => CartItem(
+                        id: product['id'],
+                        title: product['title'],
+                        price: product['price'],
+                        quantity: product['quantity'],
+                        productId: product['productId'],
+                      ),
+                    )
+                    .toList(),
+                createdAt: DateTime.parse(entry.value['createdAt']),
+              ))
+          .toList();
+      notifyListeners();
+    } catch (e) {
+      throw e;
+    }
+  }
+
   Future<void> addOrder(List<CartItem> products, double total) async {
     var order = OrderItem(
       id: null,
