@@ -23,6 +23,22 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
+  Product copyWith({
+    String id,
+    String title,
+    String description,
+    double price,
+    String imageUrl,
+  }) =>
+      Product(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        description: description ?? this.description,
+        price: description ?? this.price,
+        imageUrl: description ?? this.imageUrl,
+        isFavorite: this.isFavorite,
+      );
+
   Map<String, dynamic> toJson() => {
         'id': id,
         'title': title,
