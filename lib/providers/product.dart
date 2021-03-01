@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shop_app/models/http_exception.dart';
+import 'package:shop_app/providers/auth.dart';
 
 class Product with ChangeNotifier {
   final String id;
@@ -22,19 +23,17 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  Future<void> toggleFavorite(String authToken) async {
+  Future<void> toggleFavorite(Auth auth) async {
     final oldStatus = isFavorite;
 
     isFavorite = !isFavorite;
     notifyListeners();
 
-    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken';
+    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/userFavorites/${auth.userId}/${id}.json?auth=${auth.token}';
     try {
-      final response = await http.patch(
+      final response = await http.put(
         url,
-        body: json.encode({
-          'isFavorite': isFavorite,
-        }),
+        body: json.encode(isFavorite),
       );
 
       if (response.statusCode >= 400) {
