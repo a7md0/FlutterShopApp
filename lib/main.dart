@@ -32,7 +32,8 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Lato',
         ),
         routes: {
-          '/': (ctx) => ProductsOverviewScreen(),
+          // '/': (ctx) => ProductsOverviewScreen(),
+          '/': (ctx) => AuthScreen(),
           ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
           CartScreen.routeName: (ctx) => CartScreen(),
           OrdersScreen.routeName: (ctx) => OrdersScreen(),
