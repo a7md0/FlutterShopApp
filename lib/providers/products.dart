@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:shop_app/models/http_exception.dart';
+import 'package:shop_app/providers/auth.dart';
 
 import 'package:shop_app/providers/product.dart';
 
@@ -40,6 +41,10 @@ class Products with ChangeNotifier {
     // ),
   ];
 
+  String authToken;
+
+  Products(this.authToken, this._items);
+
   List<Product> get items => [..._items];
   List<Product> get favoriteItems => _items.where((item) => item.isFavorite).toList();
 
@@ -48,7 +53,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchProducts() async {
-    const url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products.json';
+    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products.json?auth=$authToken';
 
     try {
       final response = await http.get(url);
@@ -73,7 +78,7 @@ class Products with ChangeNotifier {
   Future<void> addProduct(Product product) async {
     var newProduct = product.copyWith(isFavorite: false);
 
-    const url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products.json';
+    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products.json?auth=$authToken';
     final response = await http.post(url, body: json.encode(product.toJson()));
     final body = json.decode(response.body);
     newProduct = newProduct.copyWith(id: body['name']);
@@ -85,7 +90,7 @@ class Products with ChangeNotifier {
   Future<void> updateProduct(Product product) async {
     final idx = _items.indexWhere((p) => p.id == product.id);
     if (idx >= 0) {
-      final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products/${product.id}.json';
+      final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products/${product.id}.json?auth=$authToken';
       await http.patch(url, body: json.encode(product.toJson()));
       _items[idx] = product;
       notifyListeners();
@@ -99,7 +104,7 @@ class Products with ChangeNotifier {
     _items.removeWhere((p) => p.id == productId);
     notifyListeners();
 
-    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products/${productId}.json';
+    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products/${productId}.json?auth=$authToken';
 
     final response = await http.delete(url);
     if (response.statusCode >= 400) {
