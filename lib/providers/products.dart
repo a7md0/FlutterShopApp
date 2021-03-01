@@ -41,7 +41,7 @@ class Products with ChangeNotifier {
     // ),
   ];
 
-  String authToken;
+  Auth auth;
 
   List<Product> get items => [..._items];
   List<Product> get favoriteItems => _items.where((item) => item.isFavorite).toList();
@@ -51,11 +51,18 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchProducts() async {
-    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products.json?auth=$authToken';
+    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products.json?auth=${auth.token}';
+    final favProductsUrl = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/userFavorites/${auth.userId}.json?auth=${auth.token}';
 
     try {
       final response = await http.get(url);
       final body = json.decode(response.body) as Map<String, dynamic>;
+      if (body == null) {
+        return;
+      }
+
+      final favoritesResponse = await http.get(favProductsUrl);
+      final favoritesBody = json.decode(favoritesResponse.body);
 
       _items = body.entries
           .map((entry) => Product(
@@ -64,7 +71,7 @@ class Products with ChangeNotifier {
                 description: entry.value['description'],
                 price: entry.value['price'],
                 imageUrl: entry.value['imageUrl'],
-                isFavorite: entry.value['isFavorite'],
+                isFavorite: favoritesBody == null ? false : favoritesBody[entry.key] ?? false,
               ))
           .toList();
       notifyListeners();
@@ -76,8 +83,14 @@ class Products with ChangeNotifier {
   Future<void> addProduct(Product product) async {
     var newProduct = product.copyWith(isFavorite: false);
 
-    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products.json?auth=$authToken';
-    final response = await http.post(url, body: json.encode(product.toJson()));
+    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products.json?auth=${auth.token}';
+    final response = await http.post(
+      url,
+      body: json.encode({
+        ...product.toJson(),
+        'creatorId': auth.userId,
+      }),
+    );
     final body = json.decode(response.body);
     newProduct = newProduct.copyWith(id: body['name']);
 
@@ -88,7 +101,7 @@ class Products with ChangeNotifier {
   Future<void> updateProduct(Product product) async {
     final idx = _items.indexWhere((p) => p.id == product.id);
     if (idx >= 0) {
-      final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products/${product.id}.json?auth=$authToken';
+      final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products/${product.id}.json?auth=${auth.token}';
       await http.patch(url, body: json.encode(product.toJson()));
       _items[idx] = product;
       notifyListeners();
@@ -102,7 +115,7 @@ class Products with ChangeNotifier {
     _items.removeWhere((p) => p.id == productId);
     notifyListeners();
 
-    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products/${productId}.json?auth=$authToken';
+    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products/${productId}.json?auth=${auth.token}';
 
     final response = await http.delete(url);
     if (response.statusCode >= 400) {
