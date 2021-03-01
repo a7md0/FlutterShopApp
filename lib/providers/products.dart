@@ -43,8 +43,6 @@ class Products with ChangeNotifier {
 
   String authToken;
 
-  Products(this.authToken, this._items);
-
   List<Product> get items => [..._items];
   List<Product> get favoriteItems => _items.where((item) => item.isFavorite).toList();
 
