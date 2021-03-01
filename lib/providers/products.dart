@@ -50,8 +50,12 @@ class Products with ChangeNotifier {
     return _items.firstWhere((p) => p.id == id);
   }
 
-  Future<void> fetchProducts() async {
-    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products.json?auth=${auth.token}';
+  Future<void> fetchProducts([bool filterByUser = false]) async {
+    var url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/products.json?auth=${auth.token}';
+    if (filterByUser) {
+      url += '&orderBy="creatorId"&equalTo="${auth.userId}"';
+    }
+
     final favProductsUrl = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/userFavorites/${auth.userId}.json?auth=${auth.token}';
 
     try {
