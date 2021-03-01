@@ -14,8 +14,6 @@ class UserProductsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final productsProvider = Provider.of<Products>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Text('My Products'),
@@ -29,20 +27,29 @@ class UserProductsScreen extends StatelessWidget {
         ],
       ),
       drawer: AppDrawer(),
-      body: RefreshIndicator(
-        onRefresh: () => _refreshProducts(context),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: ListView.builder(
-            itemCount: productsProvider.items.length,
-            itemBuilder: (_, idx) => Column(
-              children: [
-                UserProductItem(productsProvider.items[idx]),
-                Divider(),
-              ],
-            ),
-          ),
-        ),
+      body: FutureBuilder(
+        future: _refreshProducts(context),
+        builder: (ctx, snapshot) => snapshot.connectionState == ConnectionState.waiting
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : RefreshIndicator(
+                onRefresh: () => _refreshProducts(context),
+                child: Consumer<Products>(
+                  builder: (ctx, productsProvider, _) => Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: ListView.builder(
+                      itemCount: productsProvider.items.length,
+                      itemBuilder: (_, idx) => Column(
+                        children: [
+                          UserProductItem(productsProvider.items[idx]),
+                          Divider(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
       ),
     );
   }
