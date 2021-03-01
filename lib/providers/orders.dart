@@ -2,21 +2,26 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop_app/providers/auth.dart';
 
 import 'package:shop_app/providers/cart.dart';
 
 class Orders with ChangeNotifier {
   List<OrderItem> _orders = [];
-  String authToken;
+  Auth auth;
 
   List<OrderItem> get orders => [..._orders];
 
   Future<void> fetchOrders() async {
-    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/orders.json?auth=$authToken';
+    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/orders/${auth.userId}.json?auth=${auth.token}';
 
     try {
       final response = await http.get(url);
       final body = json.decode(response.body) as Map<String, dynamic>;
+
+      if (body == null) {
+        return;
+      }
 
       _orders = body.entries
           .map((entry) => OrderItem(
@@ -50,7 +55,7 @@ class Orders with ChangeNotifier {
       createdAt: DateTime.now(),
     );
 
-    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/orders.json?auth=$authToken';
+    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/orders/${auth.userId}.json?auth=${auth.token}';
     final response = await http.post(url, body: json.encode(order.toJson()));
     final body = json.decode(response.body);
     order = order.copyWith(id: body['name']);
