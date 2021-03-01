@@ -7,11 +7,12 @@ import 'package:shop_app/providers/cart.dart';
 
 class Orders with ChangeNotifier {
   List<OrderItem> _orders = [];
+  String authToken;
 
   List<OrderItem> get orders => [..._orders];
 
   Future<void> fetchOrders() async {
-    const url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/orders.json';
+    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/orders.json?auth=$authToken';
 
     try {
       final response = await http.get(url);
@@ -49,7 +50,7 @@ class Orders with ChangeNotifier {
       createdAt: DateTime.now(),
     );
 
-    const url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/orders.json';
+    final url = 'https://flutter-shop-app-bb9c5-default-rtdb.firebaseio.com/orders.json?auth=$authToken';
     final response = await http.post(url, body: json.encode(order.toJson()));
     final body = json.decode(response.body);
     order = order.copyWith(id: body['name']);
