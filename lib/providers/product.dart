@@ -57,8 +57,8 @@ class Product with ChangeNotifier {
         id: id ?? this.id,
         title: title ?? this.title,
         description: description ?? this.description,
-        price: description ?? this.price,
-        imageUrl: description ?? this.imageUrl,
+        price: price ?? this.price,
+        imageUrl: imageUrl ?? this.imageUrl,
         isFavorite: isFavorite ?? this.isFavorite,
       );
 
