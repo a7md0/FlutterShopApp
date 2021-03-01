@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop_app/models/http_exception.dart';
 
 class Auth with ChangeNotifier {
   String _token;
@@ -10,7 +11,27 @@ class Auth with ChangeNotifier {
   String _userId;
 
   Future<void> signup(String email, String password) async {
-    const url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA-sENJkobvrRQjmgrSEnqAmzPKbcL8Z4c';
+    return _authenticate(
+      email,
+      password,
+      'signUp',
+    );
+  }
+
+  Future<void> login(String email, String password) async {
+    return _authenticate(
+      email,
+      password,
+      'signInWithPassword',
+    );
+  }
+
+  Future<void> _authenticate(
+    String email,
+    String password,
+    String urlSegment,
+  ) async {
+    final url = 'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=AIzaSyA-sENJkobvrRQjmgrSEnqAmzPKbcL8Z4c';
     final data = json.encode({
       'email': email,
       'password': password,
@@ -18,6 +39,18 @@ class Auth with ChangeNotifier {
     });
 
     final response = await http.post(url, body: data);
-    print(json.decode(response.body));
+    final body = json.decode(response.body);
+
+    if (body['error'] != null) {
+      throw HttpException(body['error']['message']);
+    }
+
+    _token = body['idToken'];
+    _expiryDate = DateTime.now().add(Duration(
+      seconds: int.parse(body['expiresIn']),
+    ));
+    _userId = body['localId'];
+
+    notifyListeners();
   }
 }
