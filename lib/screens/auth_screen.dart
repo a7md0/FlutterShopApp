@@ -102,7 +102,9 @@ class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin
   final _passwordController = TextEditingController();
 
   AnimationController _animationController;
+
   Animation<Size> _heightAnimation;
+  Animation<double> _opacityAnimation;
 
   @override
   void initState() {
@@ -120,6 +122,16 @@ class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin
       CurvedAnimation(
         parent: _animationController,
         curve: Curves.linear,
+      ),
+    );
+
+    _opacityAnimation = Tween(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeIn,
       ),
     );
   }
@@ -229,8 +241,9 @@ class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin
                     _authData['password'] = value;
                   },
                 ),
-                if (_authMode == AuthMode.Signup)
-                  TextFormField(
+                FadeTransition(
+                  opacity: _opacityAnimation,
+                  child: TextFormField(
                     enabled: _authMode == AuthMode.Signup,
                     decoration: InputDecoration(labelText: 'Confirm Password'),
                     obscureText: true,
@@ -243,6 +256,7 @@ class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin
                           }
                         : null,
                   ),
+                ),
                 SizedBox(
                   height: 20,
                 ),
